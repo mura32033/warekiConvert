@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+<body>
+    <div id="app">
+        <div>
+            <h1>和暦→西暦</h1>
+            <select name="wareki" id="wareki" v-model="selectedWareki">
+                <template v-for="(w, index) in warekiList" :key="index">
+                    <option :value="w">{{w}}</option>
+                </template>
+            </select>
+            <input type="number" name="warekiNo" id="warekiNo" min="1" v-model="warekiYear" :value="warekiYear">
+            <p>{{ warekiConvertRule[selectedWareki] + parseInt(warekiYear) }}年</p>
+        </div>
+        <div>
+            <h1>西暦→和暦</h1>
+            <input type="number" name="seireki" id="seireki" min="1868" v-model="seireki" :value="seireki">
+            <button>変換</button>
+            <template v-for="(l, index) in warekiList" :key="index">
+                <p>{{ l }}{{ -warekiConvertRule[l] + parseInt(seireki) }}年</p>
+            </template>
+        </div>
+    </div>    
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello',
+                warekiList: ["明治", "大正", "昭和", "平成", "令和"],
+                warekiConvertRule: {
+                    "明治": -33 + 1900,
+                    "大正": 11 + 1900,
+                    "昭和": 25 + 1900,
+                    "平成": -12 + 2000,
+                    "令和": 18 + 2000
+                },
+                warekiYear: 1,
+                seireki: new Date().getFullYear(),
+                selectedWareki: "令和",
+                convertedYear: null
+            },
+            created () {
+                this.warekiYear = -this.warekiConvertRule[Object.keys(this.warekiConvertRule).slice(-1)] + parseInt(this.seireki)
+            },
+            methods: {
+                warekiConvert (w, y) {
+                    return y + this.warekiConvertRule[w];
+                },
+                waTosei () {
+                    const wareki = this.selectedWareki
+                    const wYear = parseInt(this.warekiYear)
+                    this.convertedYear = this.warekiConvert(wareki, wYear)
+                }
+            }
+        })
+    </script>
+</body>
+</html>
